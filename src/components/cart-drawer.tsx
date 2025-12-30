@@ -4,6 +4,7 @@ import React from "react";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { useRouter } from "next/navigation";
 
 interface CartProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface CartProps {
 }
 
 export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const { items, removeItem, updateQuantity, getCartTotal, clearCart } =
     useCart();
 
@@ -122,7 +124,13 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               </span>
             </div>
 
-            <button className="w-full bg-[#332515] text-[#F8F4E3] py-3 rounded-full hover:bg-[#A0522D] transition-colors font-medium">
+            <button
+              onClick={() => {
+                onClose();
+                router.push("/checkout");
+              }}
+              className="w-full bg-[#332515] text-[#F8F4E3] py-3 rounded-full hover:bg-[#A0522D] transition-colors font-medium"
+            >
               Proceed to Checkout
             </button>
 
