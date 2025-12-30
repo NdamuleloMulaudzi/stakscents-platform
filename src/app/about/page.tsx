@@ -37,8 +37,8 @@ export default function AboutPage() {
             </div>
 
             <div className="space-y-6">
-              <h2 className="text-[#332515]">Meet Retang Phaahla</h2>
-              <div className="space-y-4 text-[#332515]/80">
+              <h2 className="text-[#332515] text-[1.9rem]">Meet Retang Phaahla</h2>
+              <div className="space-y-6 text-[#332515]/80 text-[1.1rem]">
                 <p>
                   Stalkscents was born from a deep passion for natural living
                   and the transformative power of fragrance. Founded by Retang
