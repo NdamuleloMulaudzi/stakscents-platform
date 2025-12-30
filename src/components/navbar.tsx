@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Badge } from "@/components/ui/badge";
 
-import { CartDrawer } from "@/components/cart-drawer";
+import { Cart } from "@/components/cart-drawer";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -185,7 +185,7 @@ export function Navbar() {
           )}
         </div>
       </header>
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <Cart isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }
