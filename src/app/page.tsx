@@ -64,13 +64,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {bestSellers.map((product) => (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="block h-full"
-            >
-              <ProductCard product={product} />
-            </Link>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 

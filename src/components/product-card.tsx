@@ -43,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </Link>
 
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-5 flex flex-col grow">
         <Link href={`/products/${product.id}`} className="block mb-2">
           {product.collection && (
             <span className="text-xs text-[#A0522D] tracking-wide uppercase block">
@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </h4>
         </Link>
 
-        <p className="text-sm text-[#332515]/70 mb-3 line-clamp-2 flex-grow">
+        <p className="text-sm text-[#332515]/70 mb-3 line-clamp-2 grow">
           {product.description}
         </p>
 
