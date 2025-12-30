@@ -16,32 +16,37 @@ export function Navbar() {
   const cartCount = getCartCount();
 
   const navItems = [
-    { name: 'Home', href: '/' },
-    { 
-      name: 'Shop', 
-      href: '/products',
+    { name: "Home", href: "/" },
+    {
+      name: "Shop",
+      href: "/products",
       hasDropdown: true,
       subItems: [
-        { name: 'All Products', category: 'all', href: '/products' },
-        { name: 'Candles', category: 'candle', href: '/products?category=candle' },
-        { name: 'Diffusers', category: 'diffuser', href: '/products?category=diffuser' },
-        { name: 'Mists', category: 'mist', href: '/products?category=mist' },
+        { name: "All Products", category: "all", href: "/products" },
+        {
+          name: "Candles",
+          category: "candle",
+          href: "/products?category=candle",
+        },
+        {
+          name: "Diffusers",
+          category: "diffuser",
+          href: "/products?category=diffuser",
+        },
+        { name: "Mists", category: "mist", href: "/products?category=mist" },
       ],
     },
-    { name: 'About', href: '/about' },
-    { name: 'Masterclasses', href: '/masterclasses' },
-    { name: 'Reseller', href: '/reseller' }
+    { name: "About", href: "/about" },
+    { name: "Masterclasses", href: "/masterclasses" },
+    { name: "Reseller", href: "/reseller" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link
-            href="/"
-            className="shrink-0"
-          >
+          <Link href="/" className="shrink-0">
             <span className="font-['Cormorant'] text-2xl md:text-3xl tracking-wide">
               STALKSCENTS
             </span>
@@ -49,7 +54,7 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+            {navItems.map((item) =>
               item.hasDropdown ? (
                 <div
                   key={item.name}
@@ -60,7 +65,7 @@ export function Navbar() {
                   <Link
                     href={item.href}
                     className={`flex items-center space-x-1 transition-colors hover:text-accent ${
-                      pathname.startsWith(item.href) ? 'text-accent' : ''
+                      pathname.startsWith(item.href) ? "text-accent" : ""
                     }`}
                   >
                     <span>{item.name}</span>
@@ -88,13 +93,13 @@ export function Navbar() {
                   key={item.name}
                   href={item.href}
                   className={`transition-colors hover:text-accent ${
-                     pathname === item.href ? 'text-accent' : ''
+                    pathname === item.href ? "text-accent" : ""
                   }`}
                 >
                   {item.name}
                 </Link>
               )
-            ))}
+            )}
           </nav>
 
           {/* Cart & Mobile Menu Button */}
@@ -143,7 +148,7 @@ export function Navbar() {
                       }
                     }}
                     className={`block text-left py-2 transition-colors hover:text-accent ${
-                      pathname === item.href ? 'text-accent' : ''
+                      pathname === item.href ? "text-accent" : ""
                     }`}
                   >
                     {item.name}
