@@ -1,65 +1,145 @@
-import Image from "next/image";
+import { ProductCard } from "@/components/product-card";
+import Link from "next/link";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { products } from "@/data/products";
+import { InstagramFeed } from "@/components/instagram-feed";
 
 export default function Home() {
+  // Get best sellers (first 4 candles)
+  const bestSellers = products
+    .filter((p) => p.category === "candle")
+    .slice(0, 4);
+
+  const lifestyleImages = [
+    "https://images.unsplash.com/photo-1617597190828-1bf579d485ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwaG9tZSUyMGRlY29yfGVufDF8fHx8MTc2MTIxNTM3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+    "https://images.unsplash.com/photo-1605191353027-d21e534a419a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3p5JTIwaG9tZSUyMGludGVyaW9yfGVufDF8fHx8MTc2MTIwNDcyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+    "https://images.unsplash.com/photo-1758467033035-48b65a1c7f10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxib3RhbmljYWwlMjBob21lJTIwc3R5bGluZ3xlbnwxfHx8fDE3NjEyMTU2MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div>
+      {/* Hero Section */}
+      <section className="relative h-[70vh] md:h-[85vh] overflow-hidden">
+        <ImageWithFallback
+          src="https://images.unsplash.com/photo-1617351166759-427aff10882e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYW5kbGUlMjBob21lfGVufDF8fHx8MTc2MTIxNTYyMXww&ixlib=rb-4.1.0&q=80&w=1080"
+          alt="Luxury candles"
+          className="w-full h-full object-cover"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/40 to-primary/20" />
+        <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+          <div className="max-w-3xl text-primary-foreground">
+            <h1 className="font-['Cormorant'] text-4xl md:text-6xl lg:text-7xl mb-6">
+              Nature's Essence,
+              <br />
+              Crafted with Care
+            </h1>
+            <p className="text-lg md:text-xl mb-8 opacity-95">
+              Discover our collection of handcrafted home fragrances inspired by
+              the earth
+            </p>
+            <Link href="/products">
+              <Button
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                size="lg"
+              >
+                Explore Collection <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Best Sellers Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="text-center mb-12">
+          <h2 className="font-['Cormorant'] text-3xl md:text-5xl mb-4">
+            Best Sellers
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Our most loved scents, handcrafted with natural ingredients
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {bestSellers.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
-      </main>
+
+        <div className="text-center mt-12">
+          <Link href="/products?category=all">
+            <Button variant="outline" size="lg">
+              View All Products
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Instagram Feed */}
+      <InstagramFeed />
+
+      {/* Lifestyle Grid Section */}
+      <section className="bg-muted py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="font-['Cormorant'] text-3xl md:text-5xl mb-4">
+              Elevate Your Space
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Transform your home into a sanctuary of calm with our curated
+              fragrances
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {lifestyleImages.map((image, index) => (
+              <div
+                key={index}
+                className="aspect-[4/5] overflow-hidden rounded-sm relative"
+              >
+                <ImageWithFallback
+                  src={image}
+                  alt={`Lifestyle ${index + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Masterclass CTA Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="relative overflow-hidden rounded-lg h-[400px] md:h-[500px]">
+          <ImageWithFallback
+            src="https://images.unsplash.com/photo-1674812709785-9497062872d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYW5kbGUlMjBtYWtpbmclMjB3b3Jrc3BhY2V8ZW58MXx8fHwxNzYxMjE1NjIyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+            alt="Candle making masterclass"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-primary/60" />
+          <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+            <div className="max-w-2xl text-primary-foreground">
+              <h2 className="font-['Cormorant'] text-3xl md:text-5xl mb-6">
+                Learn the Art of Candle Making
+              </h2>
+              <p className="text-lg mb-8 opacity-95">
+                Join our online masterclasses and discover the secrets to
+                creating your own luxury home fragrances
+              </p>
+              <Link href="/masterclasses">
+                <Button
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                  size="lg"
+                >
+                  Book a Masterclass
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
