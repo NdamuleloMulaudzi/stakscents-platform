@@ -19,6 +19,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -169,16 +176,23 @@ export default function AdminProductsPage() {
                 <Label htmlFor="category" className="text-right">
                   Category
                 </Label>
-                <Input
-                  id="category"
+                <Select
                   value={newProduct.category}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, category: e.target.value })
+                  onValueChange={(value) =>
+                    setNewProduct({ ...newProduct, category: value })
                   }
-                  className="col-span-3"
-                  placeholder="candle, diffuser, mist"
-                  required
-                />
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="candle">Candles</SelectItem>
+                    <SelectItem value="diffuser">Reed Diffusers</SelectItem>
+                    <SelectItem value="mist">Room & Linen Mists</SelectItem>
+                    <SelectItem value="bath-salt">Bath Salts</SelectItem>
+                    <SelectItem value="raw-material">Raw Materials</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="price" className="text-right">

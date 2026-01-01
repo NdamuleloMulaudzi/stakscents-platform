@@ -9,6 +9,7 @@ export interface Product {
   scent?: string;
   size?: string;
   inStock?: boolean;
+  stock?: number;
   longDescription?: string;
   ingredients?: string[];
 }

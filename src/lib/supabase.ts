@@ -1,9 +1,8 @@
-// Placeholder for Supabase client
-// import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
 
-export const supabase = {
-  // Mock client
-  from: (table: string) => ({
-    select: () => Promise.resolve({ data: [], error: null }),
-  }),
-};
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://sjsidsfilcvsvgvdmlrh.supabase.co";
+const supabaseKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_qBt8tTUnQfZJp2Ng5FVMDg_pvUpF6bv";
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
