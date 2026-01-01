@@ -19,7 +19,7 @@ export const paystack = {
           body: JSON.stringify({
             email,
             amount, // Amount in kobo/cents
-            callback_url: "http://localhost:3000/shop", // Redirect here after payment
+            callback_url: "http://localhost:3000/checkout/success", // Redirect here after payment
           }),
         }
       );

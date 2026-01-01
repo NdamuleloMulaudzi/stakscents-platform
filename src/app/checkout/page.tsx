@@ -24,15 +24,26 @@ export default function CheckoutPage() {
 
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
-    const subtotal = getCartTotal();
-    const shipping = subtotal >= 500 ? 0 : 75;
-    const total = subtotal + shipping;
+
+    // Extract everything
+    const payload = {
+      email,
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      address: formData.get("address"),
+      city: formData.get("city"),
+      province: formData.get("province"),
+      postalCode: formData.get("postalCode"),
+      phone: formData.get("phone"),
+      amount: total,
+      items: cart, // Send cart items
+    };
 
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, amount: total }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();

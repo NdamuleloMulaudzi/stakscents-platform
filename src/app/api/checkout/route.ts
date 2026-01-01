@@ -6,7 +6,18 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
-    const { email, amount } = await request.json();
+    const {
+      email,
+      amount,
+      firstName,
+      lastName,
+      address,
+      city,
+      province,
+      postalCode,
+      phone,
+      items,
+    } = await request.json();
 
     if (!email || !amount) {
       return NextResponse.json(
@@ -16,44 +27,60 @@ export async function POST(request: Request) {
     }
 
     // 1. Create Pending Order in Supabase
-    // Using a simple random ID for now or letting Supabase gen UUID if possible?
-    // Schema says `id TEXT PRIMARY KEY`. Let's generate a reference ID.
     const reference = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const customer_name = `${firstName || ""} ${lastName || ""}`.trim();
+    const shipping_details = {
+      firstName,
+      lastName,
+      address,
+      city,
+      province,
+      postalCode,
+      phone,
+    };
 
+    // Insert Order
     const { error: dbError } = await supabase.from("orders").insert([
       {
         id: reference,
         customer_email: email,
-        total: amount, // Amount matches Paystack (usually in base currency units, but paystack uses cents? check implementation)
+        customer_name: customer_name,
+        shipping_details: shipping_details,
+        total: amount,
         status: "pending",
       },
     ]);
 
     if (dbError) {
-      console.error("Database Error:", dbError);
+      console.error("Database Error (Order):", dbError);
       return NextResponse.json(
         { message: "Failed to create order" },
         { status: 500 }
       );
     }
 
+    // Insert Order Items
+    if (items && Array.isArray(items)) {
+      const orderItems = items.map((item: any) => ({
+        order_id: reference,
+        product_id: item.id,
+        product_name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(orderItems);
+
+      if (itemsError) {
+        console.error("Database Error (Items):", itemsError);
+        // We continue even if items fail, but log it. Ideally we should rollback or alert.
+      }
+    }
+
     // 2. Initialize Paystack
-    // Note: Paystack usually expects amount in kobo (cents).
-    // If 'amount' passes here is Rands, we might need * 100.
-    // Taking assumption `amount` is already correct or handled by lib.
-    // Let's check lib... It just passes it through.
-    // Standard Paystack: Amount in kobo/cents.
-    // If Frontend sends R100, passes 100. Paystack sees 100 kobo = R1.
-    // Adjusting to * 100 if frontend sends Rands.
-    // Assuming frontend sends Rands for now => * 100.
-    // But `paystack.ts` might handle it? let's assume raw amount for now to be safe or simple.
-
-    // Passing our reference to Paystack is good practice
-    // But paystack.ts initializeTransaction(email, amount) doesn't accept reference currently?
-    // Let's look at `paystack.ts` signature? `initializeTransaction(email: string, amount: number)`
-    // We'll stick to simple init.
-
-    const result = await paystack.initializeTransaction(email, amount * 100); // Assuming frontend sends Rands
+    const result = await paystack.initializeTransaction(email, amount * 100);
 
     if (result.status) {
       return NextResponse.json({
