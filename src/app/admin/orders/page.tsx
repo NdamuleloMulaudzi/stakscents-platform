@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import { Eye, CheckCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -35,6 +42,8 @@ interface Order {
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -78,6 +87,11 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleViewOrder = (order: Order) => {
+    setSelectedOrder(order);
+    setIsDetailsOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -112,7 +126,9 @@ export default function AdminOrdersPage() {
                   {new Date(order.created_at).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{order.customer_email}</TableCell>
-                <TableCell>-</TableCell>
+                <TableCell>
+                  {(order as any).order_items?.length || 0} items
+                </TableCell>
                 <TableCell>R {order.total}</TableCell>
                 <TableCell>
                   <Select
@@ -154,7 +170,7 @@ export default function AdminOrdersPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => toast.info(`View details for ${order.id}`)}
+                    onClick={() => handleViewOrder(order)}
                   >
                     <Eye className="w-4 h-4" />
                   </Button>
@@ -164,6 +180,99 @@ export default function AdminOrdersPage() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="bg-white max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Order Details: {selectedOrder?.id}</DialogTitle>
+            <DialogDescription>
+              Placed on:{" "}
+              {selectedOrder &&
+                new Date(selectedOrder.created_at).toLocaleString()}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedOrder && (
+            <div className="grid gap-6 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-muted/50 p-4 rounded text-sm">
+                  <h3 className="font-bold mb-2">Customer</h3>
+                  <p>
+                    <span className="font-semibold">Name:</span>{" "}
+                    {selectedOrder.customer_name || "N/A"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email:</span>{" "}
+                    {selectedOrder.customer_email}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Phone:</span>{" "}
+                    {selectedOrder.shipping_details?.phone || "N/A"}
+                  </p>
+                </div>
+                <div className="bg-muted/50 p-4 rounded text-sm">
+                  <h3 className="font-bold mb-2">Shipping</h3>
+                  <p>{selectedOrder.shipping_details?.address}</p>
+                  <p>
+                    {selectedOrder.shipping_details?.city},{" "}
+                    {selectedOrder.shipping_details?.province}
+                  </p>
+                  <p>{selectedOrder.shipping_details?.postalCode}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-bold mb-2">Items</h3>
+                <div className="border rounded-md">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Qty</TableHead>
+                        <TableHead className="text-right">Price</TableHead>
+                        <TableHead className="text-right">Total</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(selectedOrder.order_items || []).map((item: any) => (
+                        <TableRow key={item.id}>
+                          <TableCell>{item.product_name}</TableCell>
+                          <TableCell>{item.quantity}</TableCell>
+                          <TableCell className="text-right">
+                            R {item.price}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            R {(item.price * item.quantity).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {(!selectedOrder.order_items ||
+                        selectedOrder.order_items.length === 0) && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={4}
+                            className="text-center text-muted-foreground"
+                          >
+                            No items found
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-right font-bold">
+                          Total
+                        </TableCell>
+                        <TableCell className="text-right font-bold">
+                          R {selectedOrder.total}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
