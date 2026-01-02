@@ -6,21 +6,50 @@ import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { products, productDetails } from "@/data/products";
+import { Product } from "@/types/product";
+import { Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { toast } from "sonner";
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const productId = params?.slug as string;
+  const productId = params?.id as string;
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
 
-  // Find product based on ID (slug)
-  const product = products.find((p) => p.id === productId);
-  const details = productDetails[productId];
+  useEffect(() => {
+    async function fetchProduct() {
+      if (!productId) return;
+      try {
+        const res = await fetch(`/api/products?id=${productId}`);
+        if (res.ok) {
+          const data = await res.json();
+          // API returns array if using query builder as written?
+          // My API update returns array. So taking first item.
+          if (Array.isArray(data) && data.length > 0) {
+            setProduct(data[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch product", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProduct();
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-[#332515]" />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -30,7 +59,7 @@ export default function ProductDetailPage() {
           The product you're looking for doesn't exist.
         </p>
         <Button asChild className="mt-6">
-          <a href="/products">Browse All Products</a>
+          <a href="/shop">Browse All Products</a>
         </Button>
       </div>
     );
@@ -59,9 +88,11 @@ export default function ProductDetailPage() {
     toast.success(`Added ${quantity} ${product.name} to cart!`);
   };
 
-  // Default details if not found in productDetails
-  const defaultDetails = {
-    description: `Experience the luxurious aroma of ${product.name}. Handcrafted with natural ingredients to bring a touch of elegance to your space.`,
+  // Default details
+  const displayDetails = {
+    description:
+      product.description ||
+      `Experience the luxurious aroma of ${product.name}. Handcrafted with natural ingredients to bring a touch of elegance to your space.`,
     scentNotes: {
       top: "Fresh, natural notes",
       heart: "Balanced aromatic blend",
@@ -74,8 +105,6 @@ export default function ProductDetailPage() {
       "Premium quality guaranteed",
     ],
   };
-
-  const displayDetails = details || defaultDetails;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">

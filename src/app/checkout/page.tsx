@@ -18,17 +18,49 @@ export default function CheckoutPage() {
   // Alias items to cart for compatibility with user logic
   const cart = items;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate processing delay
-    setTimeout(() => {
-      toast.success("Order placed successfully! (Demo mode)");
-      clearCart();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+
+    // Extract everything
+    const payload = {
+      email,
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      address: formData.get("address"),
+      city: formData.get("city"),
+      province: formData.get("province"),
+      postalCode: formData.get("postalCode"),
+      phone: formData.get("phone"),
+      amount: total,
+      items: cart, // Send cart items
+    };
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.authorization_url) {
+        // Redirect to Paystack
+        toast.info("Redirecting to payment...");
+        window.location.href = data.authorization_url;
+      } else {
+        toast.error(data.message || "Payment initialization failed");
+        setIsProcessing(false);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("An error occurred. Please try again.");
       setIsProcessing(false);
-      router.push("/");
-    }, 1500);
+    }
   };
 
   if (cart.length === 0) {
@@ -71,6 +103,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="you@example.com"
                     required
@@ -88,37 +121,37 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" required />
+                    <Input id="firstName" name="firstName" required />
                   </div>
                   <div>
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" required />
+                    <Input id="lastName" name="lastName" required />
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="address">Address</Label>
-                  <Input id="address" required />
+                  <Input id="address" name="address" required />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="city">City</Label>
-                    <Input id="city" required />
+                    <Input id="city" name="city" required />
                   </div>
                   <div>
                     <Label htmlFor="province">Province</Label>
-                    <Input id="province" required />
+                    <Input id="province" name="province" required />
                   </div>
                   <div>
                     <Label htmlFor="postalCode">Postal Code</Label>
-                    <Input id="postalCode" required />
+                    <Input id="postalCode" name="postalCode" required />
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" required />
+                  <Input id="phone" name="phone" type="tel" required />
                 </div>
               </div>
             </div>
@@ -130,7 +163,8 @@ export default function CheckoutPage() {
               </h2>
               <div className="bg-muted/50 p-4 rounded text-sm text-muted-foreground">
                 <p>
-                  This is a demo checkout. No actual payment will be processed.
+                  You will be redirected to Paystack to complete your secure
+                  payment.
                 </p>
               </div>
             </div>
@@ -141,7 +175,7 @@ export default function CheckoutPage() {
               size="lg"
               disabled={isProcessing}
             >
-              {isProcessing ? "Processing..." : "Place Order (Demo)"}
+              {isProcessing ? "Processing..." : "Place Order & Pay"}
             </Button>
           </form>
         </div>

@@ -1,20 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { products } from "@/data/products";
 import { ProductCard } from "@/components/product-card";
+import { Product } from "@/types/product";
+import { Loader2 } from "lucide-react";
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        if (res.ok) {
+          const data = await res.json();
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const categories = [
     { label: "All", value: "All" },
     { label: "Candles", value: "candle" },
     { label: "Reed Diffusers", value: "diffuser" },
     { label: "Room & Linen Mists", value: "mist" },
-    { label: "Bath Salts", value: "bath-salt" }, // Placeholder
-    { label: "Raw Materials", value: "raw-material" }, // Placeholder
+    { label: "Bath Salts", value: "bath-salt" },
+    { label: "Raw Materials", value: "raw-material" },
   ];
 
   const filteredProducts =
@@ -54,13 +74,19 @@ export default function ProductsPage() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-[#332515]" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
-        {filteredProducts.length === 0 && (
+        {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-[#332515]/60">
               No products found in this category

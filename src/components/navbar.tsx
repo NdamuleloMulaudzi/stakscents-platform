@@ -17,6 +17,11 @@ export function Navbar() {
   const { getCartCount } = useCart();
   const [isMounted, setIsMounted] = useState(false);
 
+  // Hide Navbar on Admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -27,21 +32,21 @@ export function Navbar() {
     { name: "Home", href: "/" },
     {
       name: "Shop",
-      href: "/products",
+      href: "/shop",
       hasDropdown: true,
       subItems: [
-        { name: "All Products", category: "all", href: "/products" },
+        { name: "All Products", category: "all", href: "/shop" },
         {
           name: "Candles",
           category: "candle",
-          href: "/products?category=candle",
+          href: "/shop?category=candle",
         },
         {
           name: "Diffusers",
           category: "diffuser",
-          href: "/products?category=diffuser",
+          href: "/shop?category=diffuser",
         },
-        { name: "Mists", category: "mist", href: "/products?category=mist" },
+        { name: "Mists", category: "mist", href: "/shop?category=mist" },
       ],
     },
     { name: "About", href: "/about" },
