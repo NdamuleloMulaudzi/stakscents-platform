@@ -35,7 +35,7 @@ export function AdminSidebar() {
               href={item.href}
               className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-#f6f2e2"
                   : "hover:bg-muted text-muted-foreground"
               }`}
             >

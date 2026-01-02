@@ -60,6 +60,8 @@ export async function POST(request: Request) {
     }
 
     // Insert Order Items
+    console.log("Received items for order:", items ? items.length : "None");
+
     if (items && Array.isArray(items)) {
       const orderItems = items.map((item: any) => ({
         order_id: reference,
@@ -75,12 +77,17 @@ export async function POST(request: Request) {
 
       if (itemsError) {
         console.error("Database Error (Items):", itemsError);
-        // We continue even if items fail, but log it. Ideally we should rollback or alert.
+      } else {
+        console.log("Items inserted successfully");
       }
     }
 
     // 2. Initialize Paystack
-    const result = await paystack.initializeTransaction(email, amount * 100);
+    const result = await paystack.initializeTransaction(
+      email,
+      amount * 100,
+      reference
+    );
 
     if (result.status) {
       return NextResponse.json({

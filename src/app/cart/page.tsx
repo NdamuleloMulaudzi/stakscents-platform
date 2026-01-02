@@ -16,7 +16,7 @@ export default function CartPage() {
         Please use the cart drawer to manage your items.
       </p>
       <Button asChild className="bg-[#332515] text-[#F8F4E3]">
-        <Link href="/products">Continue Shopping</Link>
+        <Link href="/shop">Continue Shopping</Link>
       </Button>
     </div>
   );

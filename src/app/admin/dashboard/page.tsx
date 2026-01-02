@@ -1,31 +1,56 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { DollarSign, Package, ShoppingBag, TrendingUp } from "lucide-react";
 
 export default function AdminDashboardPage() {
-  const stats = [
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/admin/stats");
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard stats", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8">Loading dashboard...</div>;
+  }
+
+  const statCards = [
     {
       label: "Total Revenue",
-      value: "R 45,231.89",
-      change: "+20.1% from last month",
+      value: `R ${stats?.revenue?.toFixed(2) || "0.00"}`,
+      change: "Lifetime revenue",
       icon: DollarSign,
     },
     {
-      label: "Orders",
-      value: "+573",
-      change: "+201 since last hour",
+      label: "Total Orders",
+      value: stats?.totalOrders || "0",
+      change: "All time orders",
       icon: ShoppingBag,
     },
     {
       label: "Products",
-      value: "12",
-      change: "+2 new products",
+      value: stats?.totalProducts || "0",
+      change: "Active products",
       icon: Package,
     },
     {
-      label: "Active Now",
-      value: "+573",
-      change: "+201 since last hour",
+      label: "Pending Orders",
+      value: stats?.pendingOrders || "0",
+      change: "Needs attention",
       icon: TrendingUp,
     },
   ];
@@ -42,7 +67,7 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
@@ -67,35 +92,42 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 bg-card rounded-lg border border-border p-6 shadow-sm">
           <h3 className="text-lg font-medium mb-4">Recent Sales</h3>
-          <p className="text-muted-foreground">
-            You made 265 sales this month.
+          <p className="text-muted-foreground mb-4">
+            Summary of recent transactions.
           </p>
-          {/* Placeholder for Chart or List */}
-          <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md mt-4">
-            <span className="text-muted-foreground text-sm">
-              Chart Placeholder
-            </span>
+          <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md">
+            <p className="text-sm text-muted-foreground">
+              Sales Chart Coming Soon
+            </p>
           </div>
         </div>
         <div className="col-span-3 bg-card rounded-lg border border-border p-6 shadow-sm">
           <h3 className="text-lg font-medium mb-4">Recent Orders</h3>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
+            {stats?.recentOrders?.map((order: any) => (
               <div
-                key={i}
+                key={order.id}
                 className="flex items-center justify-between border-b border-border pb-2 last:border-0 last:pb-0"
               >
                 <div>
-                  <p className="font-medium text-sm">Order #{1000 + i}</p>
+                  <p className="font-medium text-sm">
+                    Order #{order.id.slice(0, 8)}...
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    customer{i}@example.com
+                    {order.customer_email}
                   </p>
                 </div>
-                <div className="text-sm font-bold">
-                  R {(Math.random() * 500).toFixed(2)}
+                <div className="text-right">
+                  <div className="text-sm font-bold">R {order.total}</div>
+                  <div className="text-xs text-muted-foreground capitalize">
+                    {order.status}
+                  </div>
                 </div>
               </div>
             ))}
+            {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
+              <p className="text-sm text-muted-foreground">No recent orders.</p>
+            )}
           </div>
         </div>
       </div>

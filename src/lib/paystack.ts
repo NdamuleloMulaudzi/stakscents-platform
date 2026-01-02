@@ -1,5 +1,9 @@
 export const paystack = {
-  initializeTransaction: async (email: string, amount: number) => {
+  initializeTransaction: async (
+    email: string,
+    amount: number,
+    reference?: string
+  ) => {
     const secretKey = process.env.PAYSTACK_SECRET_KEY;
 
     if (!secretKey) {
@@ -8,6 +12,16 @@ export const paystack = {
     }
 
     try {
+      const payload: any = {
+        email,
+        amount, // Amount in kobo/cents
+        callback_url: "http://localhost:3000/checkout/success", // Redirect here after payment
+      };
+
+      if (reference) {
+        payload.reference = reference;
+      }
+
       const response = await fetch(
         "https://api.paystack.co/transaction/initialize",
         {
@@ -16,11 +30,7 @@ export const paystack = {
             Authorization: `Bearer ${secretKey}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            email,
-            amount, // Amount in kobo/cents
-            callback_url: "http://localhost:3000/checkout/success", // Redirect here after payment
-          }),
+          body: JSON.stringify(payload),
         }
       );
 

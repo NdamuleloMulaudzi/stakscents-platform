@@ -33,7 +33,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div className="group bg-white border border-[#332515]/10 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
-      <Link href={`/products/${product.id}`} className="block relative">
+      <Link href={`/shop/${product.id}`} className="block relative">
         <div className="aspect-square overflow-hidden bg-[#C9DBC3]/10 relative">
           <ImageWithFallback
             src={product.image}
@@ -44,7 +44,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </Link>
 
       <div className="p-5 flex flex-col grow">
-        <Link href={`/products/${product.id}`} className="block mb-2">
+        <Link href={`/shop/${product.id}`} className="block mb-2">
           {product.collection && (
             <span className="text-xs text-[#A0522D] tracking-wide uppercase block">
               {product.collection}
