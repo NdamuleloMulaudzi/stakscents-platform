@@ -65,13 +65,16 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Handle multiple images (simulated for now since data only has one)
-  const productImages = [
-    product.image,
-    product.image,
-    product.image,
-    product.image,
-  ];
+  // Combine main image and gallery images
+  const allImages = [product.image];
+  if (product.images && Array.isArray(product.images)) {
+    allImages.push(...product.images);
+  }
+
+  // Ensure we have exactly 4 slots for the UI
+  const displayImages = Array(4)
+    .fill(null)
+    .map((_, i) => allImages[i] || null);
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
@@ -112,31 +115,42 @@ export default function ProductDetailPage() {
         {/* Image Gallery */}
         <div>
           {/* Main Image */}
-          <div className="aspect-square overflow-hidden rounded-lg mb-4 bg-card">
-            <ImageWithFallback
-              src={productImages[selectedImage]}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
+          <div className="aspect-square overflow-hidden rounded-lg mb-4 bg-card relative">
+             {displayImages[selectedImage] ? (
+              <ImageWithFallback
+                src={displayImages[selectedImage]!}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+               <div className="w-full h-full bg-muted/30 flex items-center justify-center text-muted-foreground">
+                  <span className="text-sm">No Image</span>
+               </div>
+            )}
           </div>
 
           {/* Thumbnail Images */}
           <div className="grid grid-cols-4 gap-4">
-            {productImages.map((image, index) => (
+            {displayImages.map((image, index) => (
               <button
                 key={index}
-                onClick={() => setSelectedImage(index)}
-                className={`aspect-square overflow-hidden rounded-md bg-card border-2 transition-all ${
-                  selectedImage === index
+                onClick={() => image && setSelectedImage(index)}
+                disabled={!image}
+                className={`aspect-square overflow-hidden rounded-md bg-card border-2 transition-all relative ${
+                  selectedImage === index && image
                     ? "border-[#A0522D]"
-                    : "border-transparent hover:border-border"
+                    : "border-transparent " + (image ? "hover:border-border" : "")
                 }`}
               >
-                <ImageWithFallback
-                  src={image}
-                  alt={`Product view ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                {image ? (
+                  <ImageWithFallback
+                    src={image}
+                    alt={`Product view ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted/30" />
+                )}
               </button>
             ))}
           </div>

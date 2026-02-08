@@ -75,8 +75,8 @@ export default function AdminOrdersPage() {
       if (res.ok) {
         setOrders(
           orders.map((order) =>
-            order.id === orderId ? { ...order, status: newStatus } : order
-          )
+            order.id === orderId ? { ...order, status: newStatus } : order,
+          ),
         );
         toast.success(`Order ${orderId} status updated to ${newStatus}`);
       } else {
@@ -96,7 +96,7 @@ export default function AdminOrdersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-cormorant font-bold text-[#332515]">
+          <h1 className="text-3xl font-cormorant font-bold text-foreground">
             Orders
           </h1>
           <p className="text-muted-foreground">

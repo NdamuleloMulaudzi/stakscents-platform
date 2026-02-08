@@ -1,4 +1,4 @@
-import { CheckoutPage } from "@/app/checkout/page";
+// currently unused import removed to fix build
 // Currently using the Drawer, but this page exists for structure.
 // We can redirect to /checkout or just render a simple cart view.
 // For now, let's just render the text "Cart" or similar, or redirect.

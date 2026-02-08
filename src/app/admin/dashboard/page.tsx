@@ -57,13 +57,15 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-cormorant font-bold text-[#332515]">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground">
-          Overview of your store's performance.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-cormorant font-bold text-foreground">
+            Dashboard
+          </h1>
+          <p className="text-muted-foreground">
+            Overview of your store's performance.
+          </p>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -80,7 +82,7 @@ export default function AdminDashboardPage() {
                 </p>
                 <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
-              <div className="text-2xl font-bold font-cormorant text-[#332515]">
+              <div className="text-2xl font-bold font-cormorant text-foreground">
                 {stat.value}
               </div>
               <p className="text-xs text-muted-foreground">{stat.change}</p>
@@ -90,43 +92,45 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="col-span-4 bg-card rounded-lg border border-border p-6 shadow-sm">
-          <h3 className="text-lg font-medium mb-4">Recent Sales</h3>
-          <p className="text-muted-foreground mb-4">
+        <div className="col-span-4 bg-card rounded-lg border border-border p-6 shadow-sm hidden md:block">
+          <h3 className="text-lg font-medium mb-4 text-foreground">
+            Recent Sales
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
             Summary of recent transactions.
           </p>
-          <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md">
+          <div className="h-[200px] flex items-center justify-center bg-muted/20 rounded-md border border-dashed border-border">
             <p className="text-sm text-muted-foreground">
               Sales Chart Coming Soon
             </p>
           </div>
         </div>
         <div className="col-span-3 bg-card rounded-lg border border-border p-6 shadow-sm">
-          <h3 className="text-lg font-medium mb-4">Recent Orders</h3>
-          <div className="space-y-4">
+          <h3 className="text-lg font-medium mb-4 text-foreground">
+            Recent Orders
+          </h3>
+          <div className="space-y-8">
             {stats?.recentOrders?.map((order: any) => (
-              <div
-                key={order.id}
-                className="flex items-center justify-between border-b border-border pb-2 last:border-0 last:pb-0"
-              >
-                <div>
-                  <p className="font-medium text-sm">
-                    Order #{order.id.slice(0, 8)}...
+              <div key={order.id} className="flex items-center">
+                <div className="ml-4 space-y-1">
+                  <p className="text-sm font-medium leading-none text-foreground">
+                    Order #{order.id.slice(0, 8)}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {order.customer_email}
+                  <p className="text-sm text-muted-foreground">
+                    {order.customer_email || "Guest Customer"}
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-bold">R {order.total}</div>
-                  <div className="text-xs text-muted-foreground capitalize">
-                    {order.status}
-                  </div>
+                <div className="ml-auto font-medium text-foreground">
+                  +R {order.total}
                 </div>
               </div>
             ))}
             {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
-              <p className="text-sm text-muted-foreground">No recent orders.</p>
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  No recent orders found.
+                </p>
+              </div>
             )}
           </div>
         </div>
