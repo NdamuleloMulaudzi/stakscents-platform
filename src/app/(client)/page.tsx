@@ -3,14 +3,46 @@ import Link from "next/link";
 import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { Button } from "@/components/shared/ui/button";
 import { ArrowRight } from "lucide-react";
-import { products } from "@/data/products";
 import { InstagramFeed } from "@/components/client/instagram-feed";
+import { supabase } from "@/lib/supabase";
+import { Product } from "@/types/product";
 
-export default function Home() {
-  // Get best sellers (first 4 candles)
-  const bestSellers = products
-    .filter((p) => p.category === "candle")
-    .slice(0, 4);
+async function getBestSellers() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("is_featured", true)
+    .limit(4);
+
+  if (error) {
+    console.error("Error fetching best sellers:", error);
+    return [];
+  }
+
+  // Fallback: If no featured products, just get the first 4
+  if (!data || data.length === 0) {
+    const { data: allProducts } = await supabase
+      .from("products")
+      .select("*")
+      .limit(4);
+
+    if (allProducts) {
+      return allProducts.map((p) => ({
+        ...p,
+        price: p.price / 100, // Convert cents to Rands
+      }));
+    }
+    return [];
+  }
+
+  return data.map((p) => ({
+    ...p,
+    price: p.price / 100, // Convert cents to Rands
+  }));
+}
+
+export default async function Home() {
+  const bestSellers = await getBestSellers();
 
   const lifestyleImages = [
     "https://images.unsplash.com/photo-1617597190828-1bf579d485ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwaG9tZSUyMGRlY29yfGVufDF8fHx8MTc2MTIxNTM3MHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -39,7 +71,7 @@ export default function Home() {
               Discover our collection of handcrafted home fragrances inspired by
               the earth
             </p>
-            <Link href="/products">
+            <Link href="/shop">
               <Button
                 className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
                 size="lg"
@@ -62,14 +94,22 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {bestSellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {bestSellers.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-muted/30 rounded-lg">
+            <p className="text-muted-foreground">
+              No products found. Add some products in the admin panel!
+            </p>
+          </div>
+        )}
 
         <div className="text-center mt-12">
-          <Link href="/products?category=all">
+          <Link href="/shop">
             <Button variant="outline" size="lg">
               View All Products
             </Button>
