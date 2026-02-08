@@ -3,7 +3,7 @@
 import React from "react";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { useRouter } from "next/navigation";
 
 interface CartProps {

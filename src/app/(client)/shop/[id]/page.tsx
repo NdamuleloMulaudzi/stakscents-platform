@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { Product } from "@/types/product";
 import { Loader2 } from "lucide-react";

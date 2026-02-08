@@ -4,7 +4,7 @@ import { CheckoutPage } from "@/app/checkout/page";
 // For now, let's just render the text "Cart" or similar, or redirect.
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 
 export default function CartPage() {
   return (

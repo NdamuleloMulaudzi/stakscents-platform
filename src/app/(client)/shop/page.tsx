@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ProductCard } from "@/components/product-card";
+import { ProductCard } from "@/components/client/product-card";
 import { Product } from "@/types/product";
 import { Loader2 } from "lucide-react";
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, MoreHorizontal, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import {
   Table,
   TableBody,
@@ -10,21 +10,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shared/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/shared/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shared/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -33,10 +33,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+} from "@/components/shared/ui/dialog";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { toast } from "sonner";
 import { Product } from "@/types/product";
 

@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, Search, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/shared/ui/badge";
 
-import { Cart } from "@/components/cart-drawer";
+import { Cart } from "@/components/client/cart-drawer";
 
 export function Navbar() {
   const pathname = usePathname();

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Product } from "@/types/product";
 import { useCart } from "@/hooks/use-cart";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { toast } from "sonner";
 
 interface ProductCardProps {

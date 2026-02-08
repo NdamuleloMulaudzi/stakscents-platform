@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
+import { Separator } from "@/components/shared/ui/separator";
 import { useCart } from "@/hooks/use-cart";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { toast } from "sonner";
 
 export default function CheckoutPage() {

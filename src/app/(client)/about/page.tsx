@@ -1,4 +1,4 @@
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { Leaf, Heart, Sparkles } from "lucide-react";
 
 export default function AboutPage() {

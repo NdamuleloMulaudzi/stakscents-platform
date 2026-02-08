@@ -1,10 +1,10 @@
-import { ProductCard } from "@/components/product-card";
+import { ProductCard } from "@/components/client/product-card";
 import Link from "next/link";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { Button } from "@/components/ui/button";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
+import { Button } from "@/components/shared/ui/button";
 import { ArrowRight } from "lucide-react";
 import { products } from "@/data/products";
-import { InstagramFeed } from "@/components/instagram-feed";
+import { InstagramFeed } from "@/components/client/instagram-feed";
 
 export default function Home() {
   // Get best sellers (first 4 candles)

@@ -6,7 +6,8 @@ export async function GET(request: Request) {
   const id = searchParams.get("id");
   const category = searchParams.get("category");
 
-  let query = supabase.from("products").select("*");
+  // Join with product_images
+  let query = supabase.from("products").select("*, product_images(image)");
 
   if (id) {
     query = query.eq("id", id);
@@ -21,34 +22,79 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  if (id && data.length === 0) {
+  // Transform data to include images array
+  const productsWithImages = data.map((product: any) => ({
+    ...product,
+    images: product.product_images
+      ? product.product_images.map((img: any) => img.image)
+      : [],
+  }));
+
+  if (id && productsWithImages.length === 0) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  // If ID was requested, return the object directly, not array?
-  // Actually standard REST often returns array for collections, but filtering by ID usually returns the item.
-  // For simplicity lets return array for now and handle in client, OR simply:
-  // if (id) return NextResponse.json(data[0]);
-  // But let's stick to array return for filtered lists, and maybe special case id?
-  // Let's keep it simple: it returns a list. If filtered by ID, list has 1 item.
-  return NextResponse.json(data);
+  return NextResponse.json(productsWithImages);
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { name, price, description, image, category, stock } = body;
+  try {
+    const body = await request.json();
+    const { name, price, description, image, category, stock, images } = body;
 
-  const { data, error } = await supabase
-    .from("products")
-    .insert([{ name, price, description, image, category, stock }])
-    .select();
+    // Price is expected in Rands from frontend, convert to Cents for storage
+    const priceInCents = Math.round(parseFloat(price) * 100);
 
-  if (error) {
-    console.error("Supabase Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const { data: productData, error: productError } = await supabase
+      .from("products")
+      .insert([
+        {
+          name,
+          price: priceInCents,
+          description,
+          image, // Main image
+          category,
+          stock: parseInt(stock) || 0,
+        },
+      ])
+      .select();
+
+    if (productError) {
+      console.error("Supabase Error (Product):", productError);
+      return NextResponse.json(
+        { error: productError.message },
+        { status: 500 },
+      );
+    }
+
+    const newProduct = productData[0];
+
+    // Insert gallery images if present
+    if (images && Array.isArray(images) && images.length > 0) {
+      const imagesToInsert = images.map((imgUrl: string, index: number) => ({
+        product_id: newProduct.id,
+        image: imgUrl,
+        display_order: index,
+      }));
+
+      const { error: imagesError } = await supabase
+        .from("product_images")
+        .insert(imagesToInsert);
+
+      if (imagesError) {
+        console.error("Supabase Error (Images):", imagesError);
+        // Continue but log error, product is created.
+      }
+    }
+
+    return NextResponse.json(newProduct, { status: 201 });
+  } catch (err) {
+    console.error("Error creating product:", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
-
-  return NextResponse.json(data[0], { status: 201 });
 }
 
 export async function DELETE(request: Request) {
@@ -58,7 +104,7 @@ export async function DELETE(request: Request) {
   if (!id) {
     return NextResponse.json(
       { error: "Product ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

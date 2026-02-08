@@ -1,24 +1,59 @@
 "use client";
 
 import { useState } from "react";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { Label } from "@/components/shared/ui/label";
 import { CheckCircle, Truck, TrendingUp, Award } from "lucide-react";
 
 export default function ResellerPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const payload = {
+      first_name: formData.get("contactName")?.toString().split(" ")[0] || "",
+      last_name:
+        formData.get("contactName")?.toString().split(" ").slice(1).join(" ") ||
+        "",
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      business_name: formData.get("businessName"),
+      business_address: formData.get("message"), // Using message as address/details for now or should we add field?
+      // Schema has business_address. Let's map message to "business_address" or just concatenation?
+      // Actually the form has "Additional Information" mapped to message.
+      // Let's assume message -> business_address for simplicity if no specific address field,
+      // OR better, just map message to something else if we can, or just save it.
+      // Our schema has 'business_address' and 'business_type'.
+      // The form doesn't really have address.
+      // Let's just save message to business_address for now to avoid changing UI structure too much unless user asked.
+      business_type: "Retail", // Default
+    };
+
+    try {
+      const res = await fetch("/api/resellers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        alert("Application submitted! We will contact you soon.");
+        (e.target as HTMLFormElement).reset();
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Submission error", error);
+      alert("Error submitting form.");
+    } finally {
       setIsSubmitting(false);
-      alert("Application submitted! We will contact you soon.");
-    }, 1500);
+    }
   };
 
   const benefits = [
@@ -114,6 +149,7 @@ export default function ResellerPage() {
                 </Label>
                 <Input
                   id="contactName"
+                  name="contactName"
                   required
                   placeholder="Jane Doe"
                   className="bg-[#F9F9F9] border-[#E5E5E5] focus-visible:ring-[#A0522D]"
@@ -125,6 +161,7 @@ export default function ResellerPage() {
                 </Label>
                 <Input
                   id="businessName"
+                  name="businessName"
                   required
                   placeholder="Boutique Name"
                   className="bg-[#F9F9F9] border-[#E5E5E5] focus-visible:ring-[#A0522D]"
@@ -139,6 +176,7 @@ export default function ResellerPage() {
                 </Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   required
                   placeholder="jane@example.com"
@@ -151,6 +189,7 @@ export default function ResellerPage() {
                 </Label>
                 <Input
                   id="phone"
+                  name="phone"
                   type="tel"
                   placeholder="+27 00 000 0000"
                   className="bg-[#F9F9F9] border-[#E5E5E5] focus-visible:ring-[#A0522D]"
@@ -164,6 +203,7 @@ export default function ResellerPage() {
               </Label>
               <Input
                 id="website"
+                name="website"
                 placeholder="https://..."
                 className="bg-[#F9F9F9] border-[#E5E5E5] focus-visible:ring-[#A0522D]"
               />
@@ -175,6 +215,7 @@ export default function ResellerPage() {
               </Label>
               <Textarea
                 id="message"
+                name="message"
                 placeholder="Tell us a bit about your store and why you'd like to stock our products..."
                 className="min-h-[120px] bg-[#F9F9F9] border-[#E5E5E5] focus-visible:ring-[#A0522D]"
               />

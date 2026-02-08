@@ -42,6 +42,34 @@ export async function GET(request: Request) {
       );
     }
 
+    // 3. Send Confirmation Email
+    // Fetch full order details including items
+    const { data: orderData, error: fetchError } = await supabase
+      .from("orders")
+      .select("*, order_items(*)")
+      .eq("id", orderId)
+      .single();
+
+    if (orderData && !fetchError) {
+      // We don't block the response if email fails, just log it
+      try {
+        const { sendOrderConfirmationEmail } = await import("@/lib/email");
+        await sendOrderConfirmationEmail(
+          orderData.customer_email,
+          orderData.customer_name || "Valued Customer",
+          orderData.id,
+          orderData.total,
+          orderData.order_items || []
+        );
+        console.log(
+          "Order confirmation email sent to",
+          orderData.customer_email
+        );
+      } catch (emailErr) {
+        console.error("Failed to send email:", emailErr);
+      }
+    }
+
     return NextResponse.json({
       status: "success",
       message: "Order verified and updated",

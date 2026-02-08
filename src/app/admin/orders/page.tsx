@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { Eye, CheckCircle, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from "@/components/shared/ui/dialog";
 import {
   Table,
   TableBody,
@@ -17,15 +17,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shared/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/shared/ui/select";
+import { Badge } from "@/components/shared/ui/badge";
 import { toast } from "sonner";
 
 // Mock data

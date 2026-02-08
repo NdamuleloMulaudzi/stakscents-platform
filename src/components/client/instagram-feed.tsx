@@ -1,8 +1,8 @@
 "use client";
 
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageWithFallback } from "@/components/shared/ui/image-with-fallback";
 import { Instagram } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 
 export function InstagramFeed() {
   // Mock Instagram feed - in production, these would be provided by the client
